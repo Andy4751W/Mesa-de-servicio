@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title description">
+  <title id="title">Catálogo sin imagen</title>
+  <desc id="description">Ilustración neutra para un catálogo sin imagen configurada.</desc>
+  <rect width="320" height="200" rx="24" fill="#eef4fb"/>
+  <rect x="88" y="48" width="144" height="104" rx="18" fill="#ffffff" stroke="#b8c8dc" stroke-width="6"/>
+  <circle cx="132" cy="86" r="15" fill="#7aa7d9"/>
+  <path d="M105 134l39-37 27 25 20-18 25 30z" fill="#2b6cb0"/>
+</svg>

@@ -1,0 +1,5 @@
+Mesa de Servicio organizada
+Versión: 2026.08.04-organizada.1
+PHP objetivo: 8.1+
+Base objetivo: MariaDB 10.4 / MySQL compatible
+
