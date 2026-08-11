@@ -1,0 +1,9 @@
+/app/config/configuracion.local.php
+/public/uploads/*
+!/public/uploads/.htaccess
+!/public/uploads/solicitudes/
+/public/uploads/solicitudes/*
+!/public/uploads/solicitudes/.htaccess
+*.log
+*.zip
+

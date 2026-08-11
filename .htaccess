@@ -1,0 +1,9 @@
+Options -Indexes
+
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/login.html [R=302,L]
+</IfModule>
+

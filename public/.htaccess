@@ -1,0 +1,24 @@
+Options -Indexes
+
+DirectoryIndex login.html
+
+<FilesMatch "(^_|^\.|\.sql$|\.md$|\.example$|\.ini$|\.log$|\.bak$|\.old$|\.zip$|\.tar$|\.gz$|~$|configuracion\.local\.php$)">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    # Los modulos se muestran dentro del panel persistente del mismo sitio.
+    # SAMEORIGIN permite esa navegacion sin habilitar marcos externos.
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'; object-src 'none'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+</IfModule>
+
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
