@@ -12,3 +12,5 @@
 .phpunit.result.cache
 
 app/config/conexion.php
+
+app/config/conexion.php
