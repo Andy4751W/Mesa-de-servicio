@@ -10,3 +10,5 @@
 
 .n8n/
 .phpunit.result.cache
+
+app/config/conexion.php
