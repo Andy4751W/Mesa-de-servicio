@@ -1,358 +1,744 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta
-    name="description"
-    content="Portal de acceso a la Mesa de Servicio."
-  >
-  <title>Mesa de Servicio | Inicio</title>
-  <style>
-    :root {
-      --primary: #0f6fec;
-      --primary-dark: #0b4fae;
-      --navy: #102a43;
-      --text: #243b53;
-      --muted: #627d98;
-      --surface: #ffffff;
-      --background: #f3f6fb;
-      --border: #e1e9f3;
-      --teal: #0ea5a4;
-      --shadow: 0 20px 55px rgba(16, 42, 67, 0.14);
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa de Servicio</title>
+<style>
+  :root{
+    --accent:#ff7900;
+    --accent2:#ed3d00;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+  }
+
+  body{
+    overflow:hidden;
+    background:#020100;
+    color:#fff;
+    font-family:"Segoe UI",Arial,sans-serif;
+  }
+
+  #sunCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:0;
+  }
+
+  .layout{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding:38px 4.8%;
+  }
+
+  .access-card{
+    width:min(520px,92vw);
+    padding:32px 30px;
+    border:1px solid rgba(255,112,0,.38);
+    border-radius:22px;
+    background:
+      linear-gradient(135deg,rgba(39,9,0,.76),rgba(3,1,0,.90));
+    box-shadow:
+      0 24px 70px rgba(0,0,0,.72),
+      inset 0 0 28px rgba(255,93,0,.035),
+      0 0 24px rgba(255,83,0,.08);
+    backdrop-filter:blur(11px);
+    -webkit-backdrop-filter:blur(11px);
+  }
+
+  .eyebrow{
+    margin:0 0 8px;
+    color:#ff8a16;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.08em;
+  }
+
+  h1{
+    margin:0 0 8px;
+    font-size:27px;
+    line-height:1.16;
+  }
+
+  .description{
+    margin:8px 0 18px;
+    color:#ddd0c6;
+    font-size:14px;
+  }
+
+  .features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:18px;
+  }
+
+  .feature{
+    padding:9px 7px;
+    border-radius:9px;
+    background:rgba(255,255,255,.055);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    text-align:center;
+  }
+
+  .login-button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    padding:13px 16px;
+    border-radius:11px;
+    color:#fff;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:800;
+    background:linear-gradient(90deg,#ff7a00 0%,#ff6200 52%,#e53208 100%);
+    box-shadow:0 10px 28px rgba(255,92,0,.22);
+    transition:.18s ease;
+  }
+
+  .login-button:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.07);
+  }
+
+  .access-note{
+    margin:14px 0 0;
+    color:#bda99a;
+    text-align:center;
+    font-size:12px;
+  }
+
+  #webglFallback{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:1;
+    place-items:center;
+    background:#090200;
+    color:#ffd2ac;
+    font-size:14px;
+  }
+
+  @media(max-width:850px){
+    .layout{
+      justify-content:center;
+      padding:22px;
     }
 
-    * {
-      box-sizing: border-box;
+    .access-card{
+      background:rgba(10,3,0,.84);
     }
+  }
 
-    html {
-      min-height: 100%;
-    }
+  @media(max-width:560px){
+    .access-card{padding:27px 21px}
+    .features{grid-template-columns:1fr}
+    h1{font-size:24px}
+  }
+</style>
 
-    body {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      margin: 0;
-      padding: 22px;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 12% 8%, rgba(15, 111, 236, 0.08), transparent 28%),
-        radial-gradient(circle at 88% 92%, rgba(14, 165, 164, 0.07), transparent 26%),
-        var(--background);
-      font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+<style id="login-overlay-style">
+  /* No altera el index mientras está oculto */
+  #loginOverlay{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:none;
+    background:#020100;
+  }
 
-    .access-card {
-      position: relative;
-      isolation: isolate;
-      width: min(540px, 100%);
-      overflow: hidden;
-      padding: 34px 38px 32px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      animation: card-in 0.55s ease both;
-    }
+  #loginOverlay.is-open{
+    display:block;
+  }
 
-    .access-card::before {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      height: 4px;
-      content: "";
-      background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--teal));
-    }
+  #loginFrame{
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+    background:#020100;
+  }
+</style>
 
-    .access-card::after {
-      position: absolute;
-      z-index: -1;
-      top: -95px;
-      right: -85px;
-      width: 210px;
-      height: 210px;
-      border: 34px solid rgba(15, 111, 236, 0.045);
-      border-radius: 50%;
-      content: "";
-      pointer-events: none;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-
-    .service-icon {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: 14px;
-      color: var(--primary);
-      background: linear-gradient(145deg, #edf5ff, #e5f0ff);
-      box-shadow: inset 0 0 0 1px rgba(15, 111, 236, 0.06);
-    }
-
-    .service-icon svg {
-      width: 25px;
-      height: 25px;
-      fill: none;
-      stroke: currentColor;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 1.9;
-      transition: transform 0.22s ease;
-    }
-
-    .access-card:hover .service-icon svg {
-      transform: translateY(-1px) rotate(-3deg);
-    }
-
-    .eyebrow {
-      margin: 0 0 7px;
-      color: var(--primary);
-      font-size: 11px;
-      font-weight: 750;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      color: var(--navy);
-      font-size: 27px;
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-    }
-
-    .description {
-      max-width: 430px;
-      margin: 10px 0 18px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-      padding: 8px;
-      border: 1px solid #edf1f6;
-      border-radius: 9px;
-      color: #52708d;
-      background: #f8fafc;
-      font-size: 10.5px;
-      font-weight: 650;
-    }
-
-    .feature svg {
-      width: 14px;
-      height: 14px;
-      flex: 0 0 auto;
-      fill: none;
-      stroke: var(--teal);
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2.2;
-    }
-
-    .login-button {
-      width: 100%;
-      min-height: 46px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 11px 18px;
-      border-radius: 10px;
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--primary), #168bea);
-      box-shadow: 0 10px 22px rgba(15, 111, 236, 0.22);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-      transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease;
-    }
-
-    .login-button:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      box-shadow: 0 13px 26px rgba(15, 111, 236, 0.27);
-    }
-
-    .login-button:focus-visible {
-      outline: 3px solid rgba(15, 111, 236, 0.22);
-      outline-offset: 3px;
-    }
-
-    .login-button svg {
-      width: 17px;
-      height: 17px;
-      fill: none;
-      stroke: currentColor;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2;
-      transition: transform 0.18s ease;
-    }
-
-    .login-button:hover svg {
-      transform: translateX(3px);
-    }
-
-    .access-note {
-      width: 100%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      margin: 18px 0 0;
-      color: #71879d;
-      font-size: 11px;
-    }
-
-    .access-note svg {
-      width: 14px;
-      height: 14px;
-      fill: none;
-      stroke: var(--teal);
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2;
-    }
-
-    @keyframes card-in {
-      from {
-        opacity: 0;
-        transform: translateY(12px) scale(0.985);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    @media (max-width: 520px) {
-      body {
-        padding: 15px;
-      }
-
-      .access-card {
-        padding: 31px 23px 28px;
-        border-radius: 17px;
-      }
-
-      .card-header {
-        margin-bottom: 20px;
-      }
-
-      h1 {
-        font-size: 25px;
-      }
-
-      .features {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 350px) {
-      body {
-        display: block;
-        padding: 0;
-        background: #ffffff;
-      }
-
-      .access-card {
-        min-height: 100vh;
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-      }
-    }
-  </style>
 </head>
-<body>
-  <main class="access-card">
-    <div class="card-header">
-      <div class="service-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M4 5h16v11H7l-3 3z"></path>
-          <path d="M8 9h8M8 12h5"></path>
-        </svg>
-      </div>
-    </div>
 
-    <p class="eyebrow">Portal de atención</p>
+<body>
+<canvas id="sunCanvas" aria-hidden="true"></canvas>
+<div id="webglFallback">El navegador no pudo iniciar WebGL.</div>
+
+<div class="layout">
+  <main class="access-card">
+    <p class="eyebrow">PORTAL DE ATENCIÓN</p>
     <h1>Bienvenido a la Mesa de Servicio</h1>
     <p class="description">
       Ingrese con su cuenta para consultar y gestionar sus solicitudes.
     </p>
 
-    <div class="features" aria-label="Funciones de la plataforma">
-      <span class="feature">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m5 12 4 4L19 6"></path>
-        </svg>
-        Solicitudes
-      </span>
-      <span class="feature">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m5 12 4 4L19 6"></path>
-        </svg>
-        Seguimiento
-      </span>
-      <span class="feature">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m5 12 4 4L19 6"></path>
-        </svg>
-        Comunicación
-      </span>
+    <div class="features">
+      <div class="feature">✔ Solicitudes</div>
+      <div class="feature">✔ Seguimiento</div>
+      <div class="feature">✔ Comunicación</div>
     </div>
 
-    <a class="login-button" href="login.html">
-      Iniciar sesión
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 12h14M13 6l6 6-6 6"></path>
-      </svg>
-    </a>
+    <a class="login-button" href="login.html">Iniciar sesión →</a>
 
-    <p class="access-note">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="5" y="10" width="14" height="10" rx="2"></rect>
-        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-      </svg>
-      Acceso exclusivo para usuarios autorizados
-    </p>
+    <p class="access-note">🔒 Acceso exclusivo para usuarios autorizados</p>
   </main>
+</div>
+
+
+<div id="loginOverlay" aria-hidden="true">
+  <iframe
+    id="loginFrame"
+    title="Iniciar sesión"
+    src="about:blank"
+    referrerpolicy="same-origin"
+  ></iframe>
+</div>
+
+<script id="vs" type="x-shader/x-vertex">
+attribute vec2 a_position;
+void main(){
+  gl_Position=vec4(a_position,0.0,1.0);
+}
+</script>
+
+<script id="fs" type="x-shader/x-fragment">
+precision highp float;
+
+uniform vec2 u_resolution;
+uniform float u_time;
+
+#define PI 3.14159265358979323846
+
+float hash11(float p){
+  p=fract(p*.1031);
+  p*=p+33.33;
+  p*=p+p;
+  return fract(p);
+}
+
+float hash21(vec2 p){
+  vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973));
+  p3+=dot(p3,p3.yzx+33.33);
+  return fract((p3.x+p3.y)*p3.z);
+}
+
+float noise(vec2 p){
+  vec2 i=floor(p);
+  vec2 f=fract(p);
+  f=f*f*(3.0-2.0*f);
+
+  float a=hash21(i);
+  float b=hash21(i+vec2(1.0,0.0));
+  float c=hash21(i+vec2(0.0,1.0));
+  float d=hash21(i+vec2(1.0,1.0));
+
+  return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
+}
+
+float fbm(vec2 p){
+  float f=0.0;
+  float a=.52;
+  mat2 r=mat2(1.57,1.13,-1.13,1.57);
+
+  for(int i=0;i<6;i++){
+    f+=a*noise(p);
+    p=r*p*1.37+vec2(5.21,1.37);
+    a*=.52;
+  }
+  return f;
+}
+
+float ridged(vec2 p){
+  float n=fbm(p);
+  return 1.0-abs(2.0*n-1.0);
+}
+
+vec3 sunPalette(float x){
+  vec3 c0=vec3(.10,.005,.0);
+  vec3 c1=vec3(.48,.035,.0);
+  vec3 c2=vec3(.93,.16,.0);
+  vec3 c3=vec3(1.0,.46,.0);
+  vec3 c4=vec3(1.0,.82,.20);
+  vec3 c5=vec3(1.0,.97,.72);
+
+  if(x<.18) return mix(c0,c1,x/.18);
+  if(x<.42) return mix(c1,c2,(x-.18)/.24);
+  if(x<.66) return mix(c2,c3,(x-.42)/.24);
+  if(x<.86) return mix(c3,c4,(x-.66)/.20);
+  return mix(c4,c5,(x-.86)/.14);
+}
+
+float backgroundDust(vec2 frag, float t){
+  vec2 cell=floor(frag/3.0);
+  float h=hash21(cell);
+  float live=step(.9825,h);
+  vec2 f=fract(frag/3.0)-.5;
+  float d=length(f);
+  float tw=.55+.45*sin(t*(.5+2.0*h)+h*25.0);
+  return live*smoothstep(.42,.03,d)*tw;
+}
+
+float largeSpark(vec2 uv, float t){
+  vec2 g=uv*vec2(90.0,58.0);
+  vec2 id=floor(g);
+  vec2 f=fract(g)-.5;
+  float h=hash21(id);
+
+  float chance=step(.965,h);
+  float drift=fract(t*(.006+.018*hash11(h*37.0))+hash11(h*19.0));
+  f.x-=drift*(1.5+4.0*hash11(h*7.0));
+  f.y+=sin(t*.15+h*40.0)*.12;
+
+  float d=length(f);
+  return chance*smoothstep(.20,.015,d);
+}
+
+void main(){
+  vec2 frag=gl_FragCoord.xy;
+  vec2 p=(frag-.5*u_resolution)/u_resolution.y;
+
+  /* Posición y tamaño ajustados a la referencia:
+     centro casi fuera de pantalla a la izquierda. */
+  vec2 center=vec2(-.705,.005);
+  float radius=.465;
+
+  vec2 sp=p-center;
+  float r=length(sp);
+  float nr=r/radius;
+  float angle=atan(sp.y,sp.x);
+
+  /* Fondo */
+  vec3 col=vec3(.0030,.0008,.0002);
+
+  float rightShade=smoothstep(-.10,.72,p.x);
+  col*=1.0-.70*rightShade;
+
+  /* Polvo y chispas en el espacio */
+  float dust=backgroundDust(frag,u_time);
+  float sparks=largeSpark(p,u_time);
+
+  float nearSun=exp(-max(r-radius,0.0)*3.9);
+  vec3 dustColor=vec3(1.0,.24,.025);
+  col+=dustColor*dust*(.07+.32*nearSun);
+  col+=vec3(1.0,.31,.05)*sparks*(.03+.18*nearSun);
+
+  /* Corona exterior irregular */
+  float outside=max(nr-1.0,0.0);
+  float polarNoise=fbm(vec2(angle*2.2+u_time*.004,outside*7.0-u_time*.014));
+  float finePolar=fbm(vec2(angle*7.0-u_time*.008,outside*17.0+u_time*.02));
+
+  float coronaBase=exp(-outside*6.6);
+  float coronaNoise=.42+.82*polarNoise+.32*finePolar;
+
+  float streamNoise=ridged(vec2(angle*3.3+u_time*.006,outside*8.5-u_time*.018));
+  float streamMask=pow(streamNoise,4.2);
+  float stream=exp(-outside*(4.0+8.0*(1.0-streamMask)))*streamMask;
+
+  /* Algunas llamaradas largas */
+  float flare=0.0;
+  for(int i=0;i<12;i++){
+    float fi=float(i);
+    float seed=hash11(fi*17.31);
+    float a0=-PI+2.0*PI*seed;
+    float wob=.055*sin(u_time*(.08+.08*seed)+fi*3.1);
+    float da=abs(atan(sin(angle-a0-wob),cos(angle-a0-wob)));
+
+    float width=.012+.032*hash11(fi*7.8);
+    float angular=exp(-da*da/(width*width));
+
+    float target=.06+.32*hash11(fi*11.7);
+    float radial=exp(-pow((outside-target)/(.055+.06*hash11(fi*4.2)),2.0));
+
+    flare+=angular*radial*(.5+1.4*hash11(fi*9.7));
+  }
+
+  vec3 coronaColor=
+    vec3(1.0,.17,.0)*coronaBase*coronaNoise*.27 +
+    vec3(1.0,.38,.015)*stream*.45 +
+    vec3(1.0,.60,.08)*flare*.55;
+
+  col+=coronaColor;
+
+  /* Disco solar */
+  if(nr<1.0){
+    float z=sqrt(max(0.0,1.0-nr*nr));
+
+    /* Coordenadas "pegadas" a la esfera */
+    vec2 sphereUV=vec2(
+      atan(sp.x,z)/PI,
+      asin(clamp(sp.y/radius,-1.0,1.0))/PI
+    );
+
+    vec2 q=sphereUV*vec2(12.0,7.0);
+
+    /* Domain warp: textura solar turbulenta */
+    float w1=fbm(q*1.10+vec2(u_time*.010,-u_time*.006));
+    float w2=fbm(q*1.95+vec2(-u_time*.009,u_time*.012)+w1*2.7);
+
+    vec2 warp=vec2(w1,w2)-.5;
+
+    float n1=fbm(q*1.65+warp*3.1);
+    float n2=ridged(q*3.5+warp*5.8+vec2(u_time*.012));
+    float n3=fbm(q*8.5+warp*8.0-vec2(u_time*.025,u_time*.009));
+    float n4=ridged(q*16.0+warp*9.0+vec2(u_time*.035,-u_time*.018));
+
+    float gran=.44*n1+.28*n2+.18*n3+.10*n4;
+
+    /* manchas y filamentos oscuros */
+    float darkVeins=ridged(q*5.3+warp*7.5);
+    darkVeins=pow(darkVeins,5.0);
+
+    float spots=fbm(q*.85+vec2(4.3,1.7));
+    spots=smoothstep(.64,.83,spots);
+
+    /* zonas activas brillantes */
+    float active=ridged(q*2.8+vec2(-2.1,3.8)+warp*4.0);
+    active=pow(active,7.0);
+
+    float cell=ridged(q*11.0+warp*5.0);
+    cell=pow(cell,3.5);
+
+    /* Interior naranja oscuro, con alto contraste */
+    float intensity=.28+.78*gran;
+    intensity-=.42*darkVeins;
+    intensity-=.26*spots;
+    intensity+=.36*active;
+    intensity+=.13*cell;
+
+    /* centro menos blanco que el borde */
+    intensity*=.90+.10*z;
+
+    vec3 surface=sunPalette(clamp(intensity,0.0,1.0));
+
+    /* Limb darkening en la superficie */
+    float limb=pow(z,.32);
+    surface*=.70+.30*limb;
+
+    /* Borde blanco-amarillo muy intenso */
+    float rim=1.0-smoothstep(.86,1.0,nr);
+    rim=1.0-rim;
+    rim=pow(rim,5.0);
+
+    float rimTexture=.70+.30*fbm(vec2(angle*18.0,u_time*.025));
+    vec3 rimColor=vec3(1.0,.94,.60)*rim*rimTexture*1.75;
+
+    /* bandas incandescentes cercanas al borde */
+    float edgeFilaments=ridged(
+      vec2(angle*13.0+u_time*.01,(1.0-nr)*24.0)
+    );
+    edgeFilaments=pow(edgeFilaments,4.2)*
+                  smoothstep(.63,.99,nr);
+
+    surface+=vec3(1.0,.50,.035)*edgeFilaments*.60;
+    surface+=rimColor;
+
+    /* zonas blancas puntuales, similares a erupciones */
+    float hot=pow(active,2.4)*(.35+.65*n2);
+    surface=mix(surface,vec3(1.0,.96,.70),clamp(hot*.85,0.0,.72));
+
+    col=surface;
+  }
+
+  /* Halo brillante alrededor exacto del limbo */
+  float edgeDistance=abs(nr-1.0);
+  float sharpGlow=exp(-edgeDistance*72.0);
+  float softGlow=exp(-max(nr-1.0,0.0)*12.0)*
+                 smoothstep(1.20,.94,nr);
+
+  col+=vec3(1.0,.91,.54)*sharpGlow*1.05;
+  col+=vec3(1.0,.30,.01)*softGlow*.25;
+
+  /* Más partículas justo a la derecha del sol */
+  float rightOfSun=smoothstep(-.28,.12,p.x)*
+                   (1.0-smoothstep(.12,.55,p.x));
+  float solarDust=dust*rightOfSun*exp(-abs(p.y)*1.25);
+  col+=vec3(1.0,.20,.01)*solarDust*.22;
+
+  /* Degradado de protección visual para la tarjeta */
+  float cardShade=smoothstep(.03,.58,p.x);
+  col*=1.0-.40*cardShade;
+
+  /* Tonemapping */
+  col=1.0-exp(-col*1.45);
+  col=pow(col,vec3(.84));
+
+  gl_FragColor=vec4(col,1.0);
+}
+</script>
+
+<script>
+(() => {
+  "use strict";
+
+  const canvas=document.getElementById("sunCanvas");
+  const fallback=document.getElementById("webglFallback");
+
+  const gl=
+    canvas.getContext("webgl",{antialias:false,alpha:false,preserveDrawingBuffer:false}) ||
+    canvas.getContext("experimental-webgl");
+
+  if(!gl){
+    fallback.style.display="grid";
+    return;
+  }
+
+  function compile(type,source){
+    const shader=gl.createShader(type);
+    gl.shaderSource(shader,source);
+    gl.compileShader(shader);
+
+    if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
+      console.error(gl.getShaderInfoLog(shader));
+      throw new Error("No se pudo compilar el shader.");
+    }
+    return shader;
+  }
+
+  try{
+    /*
+      IMPORTANTE:
+      usa exactamente los mismos shaders del archivo original.
+      La apariencia del sol NO se toca.
+    */
+    const vs=compile(
+      gl.VERTEX_SHADER,
+      document.getElementById("vs").textContent
+    );
+
+    const fs=compile(
+      gl.FRAGMENT_SHADER,
+      document.getElementById("fs").textContent
+    );
+
+    const program=gl.createProgram();
+    gl.attachShader(program,vs);
+    gl.attachShader(program,fs);
+    gl.linkProgram(program);
+
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS)){
+      throw new Error(gl.getProgramInfoLog(program));
+    }
+
+    gl.useProgram(program);
+
+    const vertices=new Float32Array([
+      -1,-1,  1,-1,
+      -1, 1,  1, 1
+    ]);
+
+    const buffer=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STATIC_DRAW);
+
+    const pos=gl.getAttribLocation(program,"a_position");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+
+    const uResolution=gl.getUniformLocation(program,"u_resolution");
+    const uTime=gl.getUniformLocation(program,"u_time");
+
+    let animationFrame=0;
+    let running=true;
+    let startTime=performance.now();
+    let pausedAt=0;
+    let pausedTotal=0;
+    let resizeTimer=0;
+
+    function resize(){
+      /*
+        MISMA resolución del index original.
+      */
+      const maxPixels=1280*720;
+      const dpr=Math.min(window.devicePixelRatio||1,1.5);
+      const actual=innerWidth*innerHeight*dpr*dpr;
+      const scale=Math.min(1,Math.sqrt(maxPixels/actual));
+
+      const w=Math.max(1,Math.floor(innerWidth*dpr*scale));
+      const h=Math.max(1,Math.floor(innerHeight*dpr*scale));
+
+      if(canvas.width!==w || canvas.height!==h){
+        canvas.width=w;
+        canvas.height=h;
+        gl.viewport(0,0,w,h);
+        gl.uniform2f(uResolution,w,h);
+      }
+    }
+
+    function frame(now){
+      if(!running) return;
+
+      const t=(now-startTime-pausedTotal)*0.001;
+      gl.uniform1f(uTime,t);
+      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+
+      animationFrame=requestAnimationFrame(frame);
+    }
+
+    function pauseSun(){
+      if(!running) return;
+
+      running=false;
+      pausedAt=performance.now();
+
+      if(animationFrame){
+        cancelAnimationFrame(animationFrame);
+        animationFrame=0;
+      }
+
+      gl.flush();
+    }
+
+    function resumeSun(){
+      if(running) return;
+
+      if(pausedAt){
+        pausedTotal+=performance.now()-pausedAt;
+        pausedAt=0;
+      }
+
+      running=true;
+      animationFrame=requestAnimationFrame(frame);
+    }
+
+    addEventListener("resize",()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer=setTimeout(resize,120);
+    },{passive:true});
+
+    resize();
+    animationFrame=requestAnimationFrame(frame);
+
+    /*
+      =========================================================
+      LOGIN INSTANTÁNEO SIN SALIR DEL INDEX
+      =========================================================
+
+      En vez de destruir index.html y cargar login.html como una
+      página nueva, login.html se abre a pantalla completa dentro
+      de un iframe.
+
+      Resultado:
+      - el index nunca se descarga;
+      - WebGL no se recompila al volver;
+      - "Volver al inicio" es instantáneo;
+      - la apariencia original del sol se conserva EXACTAMENTE.
+    */
+    const overlay=document.getElementById("loginOverlay");
+    const loginFrame=document.getElementById("loginFrame");
+    const loginButton=document.querySelector(".login-button");
+
+    let loginPrimed=false;
+    let overlayOpen=false;
+
+    function primeLogin(){
+      if(loginPrimed) return;
+      loginPrimed=true;
+      loginFrame.src="login.html";
+    }
+
+    function openLogin(event){
+      if(event){
+        event.preventDefault();
+      }
+
+      primeLogin();
+
+      overlayOpen=true;
+      pauseSun();
+
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden","false");
+
+      /*
+        Añade una entrada de historial para que el botón Atrás
+        del navegador también cierre el login en vez de recargar.
+      */
+      if(!history.state || !history.state.loginOverlay){
+        history.pushState(
+          {loginOverlay:true},
+          "",
+          location.href
+        );
+      }
+    }
+
+    function closeLogin(){
+      if(!overlayOpen) return;
+
+      overlayOpen=false;
+
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden","true");
+
+      resumeSun();
+    }
+
+    /*
+      Precarga al acercar el mouse o enfocar el botón.
+      Así, normalmente el login ya está cargado antes del clic.
+    */
+    loginButton.addEventListener("pointerenter",primeLogin,{once:true,passive:true});
+    loginButton.addEventListener("focus",primeLogin,{once:true});
+    loginButton.addEventListener("click",openLogin);
+
+    /*
+      El login envía este mensaje al pulsar "Volver al inicio".
+    */
+    window.addEventListener("message",(event)=>{
+      if(event.origin!==location.origin) return;
+
+      if(event.data==="mesa-servicio-cerrar-login"){
+        if(history.state && history.state.loginOverlay){
+          history.back();
+        }else{
+          closeLogin();
+        }
+      }
+    });
+
+    /*
+      Botón Atrás del navegador.
+    */
+    window.addEventListener("popstate",()=>{
+      if(overlayOpen){
+        closeLogin();
+      }
+    });
+
+    /*
+      Por seguridad, si la pestaña se oculta paramos el sol.
+    */
+    document.addEventListener("visibilitychange",()=>{
+      if(document.hidden){
+        pauseSun();
+      }else if(!overlayOpen){
+        resumeSun();
+      }
+    });
+
+  }catch(err){
+    console.error(err);
+    fallback.style.display="grid";
+  }
+})();
+</script>
 </body>
 </html>

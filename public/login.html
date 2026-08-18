@@ -3,48 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020100">
   <title>Iniciar sesión | Mesa de Servicio</title>
   <style>
     :root {
-      --primary: #0f6fec;
-      --primary-dark: #0b4fae;
-      --navy: #102a43;
-      --text: #243b53;
-      --muted: #627d98;
-      --border: #e1e9f3;
-      --surface: #ffffff;
-      --background: #f3f6fb;
-      --teal: #0ea5a4;
-      --danger: #b42318;
-      --danger-bg: #fff1f0;
-      --danger-border: #fecdca;
-      --success: #087443;
-      --success-bg: #ecfdf3;
-      --success-border: #abefc6;
-      --shadow: 0 22px 58px rgba(16, 42, 67, 0.14);
+      --primary: #ff7a12;
+      --primary-bright: #ffc15a;
+      --orange-deep: #db3f05;
+      --gold: #ffd47a;
+      --text: #fffaf2;
+      --muted: #d8c9b8;
+      --line: rgba(255, 190, 106, 0.25);
+      --glass: rgba(8, 4, 1, 0.22);
+      --glass-strong: rgba(8, 4, 1, 0.48);
+      --danger: #ffd4d4;
+      --danger-bg: rgba(129, 22, 33, 0.40);
+      --danger-border: rgba(255, 133, 147, 0.55);
+      --success: #c7ffe1;
+      --success-bg: rgba(6, 98, 72, 0.38);
+      --success-border: rgba(84, 238, 174, 0.48);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
+    html,
+    body {
       min-height: 100%;
+    }
+
+    html {
+      color-scheme: dark;
+      background: #020100;
     }
 
     body {
       min-height: 100vh;
+      min-height: 100dvh;
       margin: 0;
-      padding: 28px;
-      display: grid;
-      place-items: center;
-      overflow-x: hidden;
-      font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+      padding: 28px clamp(28px, 7vw, 110px) 28px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
       color: var(--text);
-      background:
-        radial-gradient(circle at 12% 8%, rgba(15, 111, 236, 0.08), transparent 28%),
-        radial-gradient(circle at 88% 92%, rgba(14, 165, 164, 0.07), transparent 26%),
-        var(--background);
+      background: #020100;
+      font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
     }
 
     button,
@@ -52,46 +57,104 @@
       font: inherit;
     }
 
+    #galaxy-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #020100;
+    }
+
+    .cosmic-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 35% 50%, transparent 20%, rgba(2, 1, 0, 0.08) 58%, rgba(0, 0, 0, 0.78) 100%),
+        linear-gradient(90deg, transparent 0 58%, rgba(0, 0, 0, 0.18) 72%, rgba(0, 0, 0, 0.52) 100%);
+    }
+
     .login-shell {
       position: relative;
-      width: min(470px, 100%);
+      z-index: 2;
+      width: min(420px, 100%);
       overflow: hidden;
-      border: 1px solid rgba(225, 233, 243, 0.9);
-      border-radius: 22px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 190, 106, 0.28);
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(24, 11, 2, 0.30), rgba(4, 2, 0, 0.17)),
+        var(--glass);
+      box-shadow:
+        0 32px 90px rgba(0, 0, 0, 0.52),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        0 0 55px rgba(255, 112, 18, 0.11);
+      backdrop-filter: blur(4px) saturate(125%);
+      -webkit-backdrop-filter: blur(4px) saturate(125%);
+      animation: card-arrival 0.7s cubic-bezier(.2,.8,.2,1) both;
     }
 
     .login-shell::before {
       position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      height: 4px;
+      inset: 0 0 auto;
+      height: 3px;
       content: "";
-      background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--teal));
+      background: linear-gradient(90deg, transparent, var(--orange-deep), var(--primary), var(--gold), transparent);
+      box-shadow: 0 0 24px rgba(255, 133, 31, 0.62);
+    }
+
+    .login-shell::after {
+      position: absolute;
+      top: -130px;
+      right: -120px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      content: "";
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255, 121, 18, 0.14), transparent 68%);
     }
 
     .form-panel {
-      padding: 34px 42px 40px;
-      background: var(--surface);
+      position: relative;
+      z-index: 1;
+      padding: 25px 32px 29px;
+      background: transparent;
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 17px;
     }
 
     .back-link {
       width: fit-content;
+      min-height: 30px;
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      margin-bottom: 24px;
-      color: var(--muted);
+      color: #f1e3d2;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
-      transition: color 0.2s ease;
+      transition: color 0.2s ease, transform 0.2s ease;
     }
 
     .back-link:hover {
-      color: var(--primary);
+      color: var(--primary-bright);
+      transform: translateX(-2px);
+    }
+
+    .back-link:focus-visible,
+    .recovery-link:focus-visible {
+      outline: 3px solid rgba(255, 193, 90, 0.32);
+      outline-offset: 4px;
+      border-radius: 5px;
     }
 
     .back-link svg {
@@ -104,36 +167,100 @@
       stroke-width: 2;
     }
 
+    .system-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #bcebd8;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .system-status::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2ee6a6;
+      box-shadow: 0 0 0 4px rgba(46, 230, 166, 0.12), 0 0 14px rgba(46, 230, 166, 0.70);
+      content: "";
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .brand-mark {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 13px;
+      color: #fff;
+      background: linear-gradient(145deg, rgba(255, 174, 55, 0.96), rgba(255, 103, 13, 0.94) 58%, rgba(194, 49, 4, 0.92));
+      box-shadow: 0 9px 24px rgba(255, 104, 13, 0.28), inset 0 1px 0 rgba(255,255,255,.25);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-copy strong,
+    .brand-copy small {
+      display: block;
+    }
+
+    .brand-copy strong {
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-copy small {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
     .form-heading {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     .form-heading h1 {
       margin: 0 0 8px;
-      color: var(--navy);
-      font-size: 30px;
-      line-height: 1.2;
-      letter-spacing: -0.025em;
+      color: #fff;
+      font-size: clamp(29px, 4vw, 34px);
+      line-height: 1.16;
+      letter-spacing: -0.03em;
+      text-shadow: 0 3px 18px rgba(255, 121, 18, 0.18);
     }
 
     .form-heading p {
+      max-width: 365px;
       margin: 0;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.6;
     }
 
     .alerta {
       display: none;
       align-items: flex-start;
       gap: 10px;
-      margin-bottom: 17px;
+      margin-bottom: 13px;
       padding: 12px 14px;
       border: 1px solid;
-      border-radius: 10px;
+      border-radius: 11px;
       font-size: 13px;
+      font-weight: 650;
       line-height: 1.45;
       text-align: left;
+      backdrop-filter: blur(8px);
     }
 
     .alerta.visible {
@@ -149,7 +276,7 @@
       border-radius: 50%;
       color: #fff;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .alerta.error {
@@ -160,7 +287,7 @@
 
     .alerta.error::before {
       content: "!";
-      background: #d92d20;
+      background: #e84855;
     }
 
     .alerta.exito {
@@ -171,7 +298,7 @@
 
     .alerta.exito::before {
       content: "✓";
-      background: #12b76a;
+      background: #16bd7d;
     }
 
     .field {
@@ -181,9 +308,9 @@
     .field label {
       display: block;
       margin-bottom: 8px;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
+      color: #edf6ff;
+      font-size: 13px;
+      font-weight: 760;
     }
 
     .input-wrap {
@@ -199,62 +326,75 @@
       pointer-events: none;
       transform: translateY(-50%);
       fill: none;
-      stroke: #829ab1;
+      stroke: #c8b49d;
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-width: 1.8;
+      transition: stroke 0.2s ease, filter 0.2s ease;
     }
 
     .input-wrap input {
       width: 100%;
       height: 47px;
-      padding: 0 44px;
+      padding: 0 46px;
       outline: none;
-      border: 1px solid #cbd8e6;
-      border-radius: 10px;
-      color: var(--navy);
-      background: #fbfdff;
+      border: 1px solid rgba(255, 199, 128, 0.26);
+      border-radius: 12px;
+      color: #fff;
+      caret-color: var(--primary-bright);
+      background: rgba(7, 3, 0, 0.40);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+      backdrop-filter: blur(3px);
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .input-wrap input::placeholder {
-      color: #9fb3c8;
+      color: #a9957e;
+      opacity: 1;
+    }
+
+    .input-wrap input:hover {
+      border-color: rgba(255, 199, 128, 0.44);
+      background: rgba(14, 6, 1, 0.50);
     }
 
     .input-wrap input:focus {
-      border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 4px rgba(15, 111, 236, 0.10);
+      border-color: var(--primary-bright);
+      background: rgba(17, 7, 1, 0.60);
+      box-shadow: 0 0 0 4px rgba(255, 122, 18, 0.14), 0 0 24px rgba(255, 122, 18, 0.13);
     }
 
     .input-wrap:focus-within .input-icon {
-      stroke: var(--primary);
+      stroke: var(--primary-bright);
+      filter: drop-shadow(0 0 6px rgba(255, 193, 90, 0.58));
     }
 
     .password-toggle {
       position: absolute;
       top: 50%;
       right: 9px;
-      width: 34px;
-      height: 34px;
+      width: 35px;
+      height: 35px;
       display: grid;
       place-items: center;
       padding: 0;
       transform: translateY(-50%);
       border: 0;
-      border-radius: 8px;
-      color: #627d98;
+      border-radius: 9px;
+      color: #c8b49d;
       background: transparent;
       cursor: pointer;
     }
 
     .password-toggle:hover {
-      color: var(--primary);
-      background: #edf5ff;
+      color: var(--primary-bright);
+      background: rgba(255, 122, 18, 0.12);
     }
 
-    .password-toggle:focus-visible {
-      outline: 3px solid rgba(15, 111, 236, 0.20);
+    .password-toggle:focus-visible,
+    .submit-button:focus-visible {
+      outline: 3px solid rgba(255, 193, 90, 0.34);
+      outline-offset: 3px;
     }
 
     .password-toggle svg {
@@ -267,34 +407,62 @@
       stroke-width: 1.9;
     }
 
+    .recovery-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: -5px 0 13px;
+    }
+
+    .recovery-link {
+      color: #ffc15a;
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+    }
+
+    .recovery-link:hover {
+      color: #ffe0a0;
+      text-decoration: underline;
+    }
+
     .submit-button {
+      position: relative;
       width: 100%;
-      min-height: 48px;
+      min-height: 47px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 9px;
+      overflow: hidden;
       margin-top: 5px;
       padding: 12px 20px;
-      border: 0;
-      border-radius: 10px;
+      border: 1px solid rgba(255, 206, 126, 0.50);
+      border-radius: 12px;
       color: #fff;
-      background: linear-gradient(135deg, var(--primary), #168bea);
-      box-shadow: 0 10px 22px rgba(15, 111, 236, 0.22);
+      background: linear-gradient(125deg, rgba(255, 157, 34, 0.97), rgba(255, 103, 13, 0.96) 54%, rgba(193, 48, 4, 0.96));
+      box-shadow: 0 12px 30px rgba(255, 91, 7, 0.30), inset 0 1px 0 rgba(255,255,255,.22);
       cursor: pointer;
-      font-weight: 700;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      font-weight: 820;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .submit-button::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.24) 48%, transparent 66%);
+      transform: translateX(-115%);
+      transition: transform 0.55s ease;
     }
 
     .submit-button:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      box-shadow: 0 13px 26px rgba(15, 111, 236, 0.28);
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 16px 38px rgba(255, 91, 7, 0.38), 0 0 28px rgba(255, 180, 52, 0.18);
     }
 
-    .submit-button:focus-visible {
-      outline: 3px solid rgba(15, 111, 236, 0.24);
-      outline-offset: 3px;
+    .submit-button:hover::before {
+      transform: translateX(115%);
     }
 
     .submit-button:disabled {
@@ -313,58 +481,90 @@
       stroke-width: 2;
     }
 
-    .register {
-      margin: 23px 0 0;
-      color: var(--muted);
-      font-size: 14px;
+    .privacy-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin: 15px 0 0;
+      color: #ad9a84;
+      font-size: 10px;
       text-align: center;
     }
 
-    .register a {
-      color: var(--primary);
-      font-weight: 700;
-      text-decoration: none;
+    .privacy-note svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
     }
 
-    .register a:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
+    @keyframes card-arrival {
+      from { opacity: 0; transform: translateY(18px) scale(0.985); }
+      to { opacity: 1; transform: none; }
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 900px) {
       body {
-        padding: 16px;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .cosmic-vignette {
+        background: radial-gradient(circle at 50% 50%, transparent 18%, rgba(2, 1, 0, 0.10) 58%, rgba(0, 0, 0, 0.76) 100%);
+      }
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 14px;
+        overflow-y: auto;
       }
 
       .login-shell {
-        border-radius: 18px;
+        border-radius: 19px;
+        background: linear-gradient(145deg, rgba(23, 10, 2, 0.38), rgba(4, 2, 0, 0.24));
       }
 
       .form-panel {
-        padding: 28px 23px 32px;
+        padding: 25px 23px 28px;
       }
 
-      .back-link {
-        margin-bottom: 22px;
+      .panel-top {
+        margin-bottom: 20px;
+      }
+
+      .system-status {
+        font-size: 9px;
+      }
+
+      .brand-lockup {
+        margin-bottom: 19px;
       }
 
       .form-heading h1 {
-        font-size: 27px;
+        font-size: 28px;
       }
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 370px) {
       body {
-        display: block;
-        padding: 0;
-        background: #fff;
+        padding: 7px;
       }
 
       .login-shell {
-        min-height: 100vh;
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
+        border-radius: 16px;
+      }
+
+      .form-panel {
+        padding: 20px 17px 23px;
+      }
+
+      .system-status {
+        display: none;
       }
     }
 
@@ -372,30 +572,47 @@
       *,
       *::before,
       *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
 <body>
+  <canvas id="galaxy-canvas" aria-hidden="true"></canvas>
+  <div class="cosmic-vignette" aria-hidden="true"></div>
+
   <main class="login-shell">
-    <section class="form-panel">
-      <a class="back-link" href="index.html">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m15 18-6-6 6-6"/>
-        </svg>
-        Volver al inicio
-      </a>
+    <section class="form-panel" aria-labelledby="login-title">
+      <div class="panel-top">
+        <a id="volverInicio" class="back-link" href="index.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Volver al inicio
+        </a>
+        <span class="system-status">Acceso seguro</span>
+      </div>
+
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">MS</span>
+        <span class="brand-copy">
+          <strong>Mesa de Servicio</strong>
+          <small>Portal corporativo · Colombia y Perú</small>
+        </span>
+      </div>
 
       <div class="form-heading">
-        <h1>Iniciar sesión</h1>
+        <h1 id="login-title">Iniciar sesión</h1>
         <p>Ingrese con sus credenciales para acceder a la Mesa de Servicio.</p>
       </div>
 
       <div id="mensajeError" class="alerta error" role="alert" aria-live="assertive"></div>
       <div id="mensajeEstado" class="alerta exito" role="status" aria-live="polite"></div>
 
-      <form id="formLogin" action="login.php" method="POST" autocomplete="on">
+      <form id="formLogin" action="login.php" method="POST" autocomplete="on" target="_top">
         <div class="field">
           <label for="email">Correo electrónico</label>
           <div class="input-wrap">
@@ -447,6 +664,10 @@
           </div>
         </div>
 
+        <div class="recovery-row">
+          <a class="recovery-link" href="recuperarPassword.php" target="_top">¿Olvidó su contraseña?</a>
+        </div>
+
         <button id="botonIngresar" class="submit-button" type="submit">
           <span>Ingresar</span>
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -454,10 +675,528 @@
           </svg>
         </button>
       </form>
+
+      <p class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        Conexión protegida y acceso exclusivo para usuarios autorizados
+      </p>
     </section>
   </main>
 
   <script>
+    (function () {
+      'use strict';
+
+      const canvas = document.getElementById('galaxy-canvas');
+      const context = canvas.getContext('2d', { alpha: false });
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const coarsePointer = window.matchMedia('(pointer: coarse)');
+      const TAU = Math.PI * 2;
+      const ARM_COUNT = 4;
+      const VORTEX_TEXTURE_DESKTOP = 560;
+      const VORTEX_TEXTURE_MOBILE = 360;
+      const palette = ['#fff3b0', '#ffd23f', '#ff9e1b', '#ff6811', '#d83b05', '#7d1b02'];
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let galaxyStars = [];
+      let coreStars = [];
+      let distantStars = [];
+      let animationFrame = 0;
+      let lastDrawTime = 0;
+      let pointerX = 0;
+      let pointerY = 0;
+      let targetPointerX = 0;
+      let targetPointerY = 0;
+      let backgroundGradient;
+      let denseGalaxyBitmap = null;
+      let denseGalaxyWorker = null;
+      let denseGalaxyStarted = false;
+      let denseGalaxyFailed = false;
+
+      function random(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function centeredNoise() {
+        return Math.random() + Math.random() + Math.random() - 1.5;
+      }
+
+      function chooseColor(radius) {
+        if (radius < 0.34 && Math.random() < 0.76) {
+          return palette[Math.random() < 0.34 ? 0 : Math.random() < 0.68 ? 1 : 2];
+        }
+        const position = Math.min(palette.length - 1, Math.floor(random(2, palette.length)));
+        return palette[position];
+      }
+
+      function denseGalaxyWorkerMain() {
+        self.onmessage = function (event) {
+          const size = event.data.size;
+          const canvas = new OffscreenCanvas(size, size);
+          const workerContext = canvas.getContext('2d', { alpha: true });
+          const image = workerContext.createImageData(size, size);
+          const pixels = image.data;
+          const center = size * 0.5;
+          const scale = size * 0.47;
+          const flatten = 0.80;
+          const colorStops = [
+            [0.00, 0, 0, 0],
+            [0.035, 24, 2, 0],
+            [0.10, 68, 8, 0],
+            [0.22, 151, 29, 0],
+            [0.42, 237, 78, 2],
+            [0.68, 255, 151, 13],
+            [0.94, 255, 220, 82],
+            [1.20, 255, 248, 202],
+            [1.50, 255, 255, 242]
+          ];
+
+          function fract(value) {
+            return value - Math.floor(value);
+          }
+
+          function clamp(value, minimum, maximum) {
+            return Math.max(minimum, Math.min(maximum, value));
+          }
+
+          function colorForEnergy(energy) {
+            for (let stopIndex = 0; stopIndex < colorStops.length - 1; stopIndex += 1) {
+              const start = colorStops[stopIndex];
+              const end = colorStops[stopIndex + 1];
+              if (energy >= start[0] && energy <= end[0]) {
+                const amount = clamp((energy - start[0]) / (end[0] - start[0]), 0, 1);
+                return [
+                  start[1] + (end[1] - start[1]) * amount,
+                  start[2] + (end[2] - start[2]) * amount,
+                  start[3] + (end[3] - start[3]) * amount
+                ];
+              }
+            }
+            return colorStops[colorStops.length - 1].slice(1);
+          }
+
+          for (let pixelY = 0; pixelY < size; pixelY += 1) {
+            for (let pixelX = 0; pixelX < size; pixelX += 1) {
+              const x = (pixelX - center) / scale;
+              const y = (pixelY - center) / (scale * flatten);
+              const radius = Math.sqrt(x * x + y * y);
+              const theta = Math.atan2(y, x);
+              const hashA = fract(Math.sin(pixelX * 12.9898 + pixelY * 78.233) * 43758.5453);
+              const hashB = fract(Math.sin(pixelX * 39.3467 - pixelY * 11.1351) * 24634.6345);
+              const hashC = fract(Math.sin(pixelX * 7.5179 + pixelY * 43.113) * 15731.743);
+              const turbulence = Math.sin(theta * 5.0 + radius * 11.0) * 0.18
+                + Math.sin(theta * 11.0 - radius * 24.0) * 0.085
+                + Math.sin(x * 8.0 + y * 6.0) * 0.07;
+              const flow = theta + Math.pow(Math.max(radius, 0.001), 0.86) * 4.85 + turbulence;
+              const broadArms = Math.pow(
+                0.5 + 0.5 * Math.cos(flow * 3.0 + Math.sin(radius * 9.0) * 0.35),
+                1.28
+              );
+              const brokenFilaments = Math.pow(
+                Math.max(0, Math.cos(flow * 6.0 - 0.7 + Math.sin(theta * 4.0 - radius * 21.0))),
+                7.0
+              );
+              const largeCloud = 0.5 + 0.5 * Math.sin(x * 10.0 + Math.sin(y * 7.0) * 2.3 + theta);
+              const mediumCloud = 0.5 + 0.5 * Math.sin((x - y) * 24.0 + Math.sin(theta * 6.0) * 1.7);
+              const cloudTexture = clamp(
+                0.22 + largeCloud * 0.30 + mediumCloud * 0.20 + hashA * 0.20 + hashB * 0.18,
+                0,
+                1.15
+              );
+              const asymmetry = clamp(
+                0.78 + Math.sin(theta - radius * 2.1) * 0.18 + Math.sin(theta * 2.0 + 0.9) * 0.12,
+                0.48,
+                1.18
+              );
+              const outerFalloff = clamp((1.16 - radius) / 0.34, 0, 1);
+              const disk = Math.exp(-radius * 1.62) * outerFalloff;
+              let energy = disk * (0.20 + broadArms * 0.92) * cloudTexture * asymmetry;
+              energy += disk * brokenFilaments * (0.10 + hashC * 0.18);
+              energy += Math.exp(-Math.pow((radius - 0.25) / 0.28, 2))
+                * (0.12 + broadArms * 0.32) * cloudTexture;
+              energy += Math.exp(-Math.pow(radius / 0.20, 2)) * (0.68 + hashB * 0.24);
+              energy += Math.exp(-Math.pow(radius / 0.075, 2)) * 0.82;
+
+              const stars = hashA > 0.982
+                ? (0.26 + hashB * 0.88) * clamp((1.34 - radius) / 0.50, 0, 1)
+                : 0;
+              const brightStars = hashC > 0.997 ? 0.70 + hashA * 0.80 : 0;
+              energy = Math.max(energy, stars + brightStars);
+              energy *= clamp(0.70 + hashC * 0.54, 0, 1.35);
+              energy = clamp(energy, 0, 1.5);
+              const color = colorForEnergy(energy);
+
+              const index = (pixelY * size + pixelX) * 4;
+              pixels[index] = Math.round(color[0]);
+              pixels[index + 1] = Math.round(color[1]);
+              pixels[index + 2] = Math.round(color[2]);
+              pixels[index + 3] = energy > 0.018 ? 255 : 0;
+            }
+          }
+
+          workerContext.putImageData(image, 0, 0);
+          const bitmap = canvas.transferToImageBitmap();
+          self.postMessage({ bitmap: bitmap, size: size }, [bitmap]);
+        };
+      }
+
+      function supportsUltraDenseTexture() {
+        return !denseGalaxyFailed && 'Worker' in window && 'OffscreenCanvas' in window;
+      }
+
+      function enableUltraDenseFallback() {
+        denseGalaxyFailed = true;
+        galaxyStars = [];
+        coreStars = [];
+        createScene();
+        start();
+      }
+
+      function startUltraDenseTexture() {
+        if (denseGalaxyStarted || !supportsUltraDenseTexture()) {
+          return;
+        }
+
+        denseGalaxyStarted = true;
+        try {
+          const workerSource = '(' + denseGalaxyWorkerMain.toString() + ')();';
+          const workerUrl = URL.createObjectURL(new Blob([workerSource], { type: 'text/javascript' }));
+          denseGalaxyWorker = new Worker(workerUrl);
+          URL.revokeObjectURL(workerUrl);
+        } catch (error) {
+          denseGalaxyWorker = null;
+          enableUltraDenseFallback();
+          return;
+        }
+
+        denseGalaxyWorker.onmessage = function (event) {
+          if (!event.data || !event.data.bitmap) {
+            return;
+          }
+          if (denseGalaxyBitmap && typeof denseGalaxyBitmap.close === 'function') {
+            denseGalaxyBitmap.close();
+          }
+          denseGalaxyBitmap = event.data.bitmap;
+          galaxyStars = [];
+          coreStars = [];
+          denseGalaxyWorker.terminate();
+          denseGalaxyWorker = null;
+          start();
+        };
+
+        denseGalaxyWorker.onerror = function () {
+          if (denseGalaxyWorker) {
+            denseGalaxyWorker.terminate();
+          }
+          denseGalaxyWorker = null;
+          enableUltraDenseFallback();
+        };
+
+        denseGalaxyWorker.postMessage({
+          size: width < 700 ? VORTEX_TEXTURE_MOBILE : VORTEX_TEXTURE_DESKTOP
+        });
+      }
+
+      function createScene() {
+        const compact = width < 700;
+        const areaFactor = Math.min(1, (width * height) / 1050000);
+        const ultraDenseSupported = supportsUltraDenseTexture();
+        const galaxyBase = ultraDenseSupported ? (compact ? 80 : 140) : (compact ? 7600 : 24000);
+        const coreBase = ultraDenseSupported ? (compact ? 24 : 42) : (compact ? 1700 : 4800);
+        const galaxyCount = Math.round(galaxyBase * Math.max(0.72, areaFactor));
+        const coreCount = Math.round(coreBase * Math.max(0.76, areaFactor));
+        const distantCount = Math.round((compact ? 260 : 720) * Math.max(0.72, areaFactor));
+
+        galaxyStars = Array.from({ length: galaxyCount }, function (_, index) {
+          const radius = 0.052 + Math.pow(Math.random(), 0.78) * 0.96;
+          const arm = index % ARM_COUNT;
+          const belongsToCloud = Math.random() < 0.82;
+          const filament = Math.random() < 0.36;
+          const armPhases = [0.18, 1.74, 3.36, 5.12];
+          const armSpread = centeredNoise() * (belongsToCloud ? 0.20 + radius * 0.52 : 0.055 + radius * 0.15);
+          const fork = filament ? (index % 2 === 0 ? -1 : 1) * (0.035 + radius * 0.14) : 0;
+          const wave = Math.sin(radius * 13.0 + arm * 1.45) * 0.16
+            + Math.sin(radius * 31.0 + arm * 2.35) * 0.065;
+          const baseAngle = armPhases[arm] + radius * 4.72 + wave + armSpread + fork;
+          const rareBrightStar = Math.random() < 0.032;
+
+          return {
+            radius: Math.max(0.018, radius * random(belongsToCloud ? 0.955 : 0.985, belongsToCloud ? 1.045 : 1.015)),
+            angle: baseAngle,
+            size: rareBrightStar ? random(2.2, 5.3) : random(0.68, 2.35),
+            alpha: random(belongsToCloud ? 0.11 : 0.19, belongsToCloud ? 0.62 : 0.78) * (1.08 - radius * 0.24),
+            twinkle: random(0.55, 2.1),
+            phase: random(0, TAU),
+            color: chooseColor(radius),
+            drift: random(0.92, 1.08),
+            bright: rareBrightStar
+          };
+        });
+
+        coreStars = Array.from({ length: coreCount }, function () {
+          const radius = 0.018 + Math.pow(Math.random(), 1.72) * 0.23;
+          return {
+            radius: radius,
+            angle: random(0, TAU),
+            size: random(0.72, 2.55),
+            alpha: random(0.36, 0.92),
+            phase: random(0, TAU),
+            twinkle: random(0.6, 1.8),
+            color: palette[Math.random() < 0.26 ? 0 : Math.random() < 0.68 ? 1 : 2]
+          };
+        });
+
+        distantStars = Array.from({ length: distantCount }, function () {
+          return {
+            x: Math.random(),
+            y: Math.random(),
+            size: random(0.65, 2.2),
+            alpha: random(0.08, 0.38),
+            phase: random(0, TAU),
+            twinkle: random(0.35, 1.3),
+            color: Math.random() < 0.36 ? '#ff9e1b' : Math.random() < 0.72 ? '#ff6811' : '#8f3b16'
+          };
+        });
+      }
+
+      function resize() {
+        width = Math.max(1, window.innerWidth);
+        height = Math.max(1, window.innerHeight);
+        dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        context.imageSmoothingEnabled = false;
+
+        const galaxyCenterX = width > 900 ? width * 0.34 : width * 0.50;
+        backgroundGradient = context.createRadialGradient(
+          galaxyCenterX,
+          height * 0.52,
+          0,
+          galaxyCenterX,
+          height * 0.52,
+          Math.max(width, height) * 0.72
+        );
+        backgroundGradient.addColorStop(0, '#160506');
+        backgroundGradient.addColorStop(0.16, '#090203');
+        backgroundGradient.addColorStop(0.42, '#030102');
+        backgroundGradient.addColorStop(0.76, '#010100');
+        backgroundGradient.addColorStop(1, '#000000');
+        if (!denseGalaxyBitmap) {
+          createScene();
+        }
+        window.setTimeout(startUltraDenseTexture, 220);
+        draw(performance.now(), true);
+      }
+
+      function transformPoint(angle, radius, scale, flatten, rotation) {
+        const rawX = Math.cos(angle) * radius * scale;
+        const rawY = Math.sin(angle) * radius * scale * flatten;
+        const cosRotation = Math.cos(rotation);
+        const sinRotation = Math.sin(rotation);
+        return {
+          x: rawX * cosRotation - rawY * sinRotation,
+          y: rawX * sinRotation + rawY * cosRotation
+        };
+      }
+
+      function drawPixel(x, y, size, color, alpha) {
+        const pixelSize = Math.max(1, Math.round(size));
+        const pixelX = Math.round(x - pixelSize * 0.5);
+        const pixelY = Math.round(y - pixelSize * 0.5);
+        context.globalAlpha = alpha;
+        context.fillStyle = color;
+        context.fillRect(pixelX, pixelY, pixelSize, pixelSize);
+      }
+
+      function draw(time, still) {
+        if (!still && time - lastDrawTime < 30) {
+          animationFrame = window.requestAnimationFrame(function (nextTime) {
+            draw(nextTime, false);
+          });
+          return;
+        }
+        lastDrawTime = time;
+
+        const seconds = time * 0.001;
+        const wide = width > 900;
+        const cx = width * (wide ? 0.34 : 0.50) + pointerX * width * 0.018;
+        const cy = height * 0.52 + pointerY * height * 0.018;
+        const scale = Math.min(width * (wide ? 0.47 : 0.68), height * 0.68);
+        const flatten = width < 600 ? 0.84 : 0.79;
+        const rotation = -0.12;
+        const globalSpin = reduceMotion.matches ? 0 : seconds * 0.014;
+
+        context.globalAlpha = 1;
+        context.globalCompositeOperation = 'source-over';
+        context.fillStyle = backgroundGradient;
+        context.fillRect(0, 0, width, height);
+
+        context.save();
+        context.globalCompositeOperation = 'lighter';
+        distantStars.forEach(function (star) {
+          const pulse = 0.76 + Math.sin(seconds * star.twinkle + star.phase) * 0.24;
+          drawPixel(
+            star.x * width - pointerX * 7,
+            star.y * height - pointerY * 7,
+            star.size,
+            star.color,
+            star.alpha * pulse
+          );
+        });
+        context.restore();
+
+        context.save();
+        context.globalCompositeOperation = 'lighter';
+        if (denseGalaxyBitmap) {
+          const textureDiameter = scale * 2.28;
+          context.translate(cx, cy);
+          context.rotate(globalSpin * 1.06);
+          context.globalAlpha = 0.94 + Math.sin(seconds * 0.42) * 0.035;
+          context.imageSmoothingEnabled = false;
+          context.drawImage(
+            denseGalaxyBitmap,
+            -textureDiameter * 0.5,
+            -textureDiameter * 0.5,
+            textureDiameter,
+            textureDiameter
+          );
+          context.globalCompositeOperation = 'source-over';
+          const denseCore = context.createRadialGradient(0, 0, 0, 0, 0, scale * 0.14);
+          denseCore.addColorStop(0, 'rgba(255,255,239,1)');
+          denseCore.addColorStop(0.12, 'rgba(255,248,200,1)');
+          denseCore.addColorStop(0.28, 'rgba(255,218,91,.96)');
+          denseCore.addColorStop(0.52, 'rgba(255,137,13,.62)');
+          denseCore.addColorStop(0.78, 'rgba(223,55,2,.20)');
+          denseCore.addColorStop(1, 'rgba(60,6,0,0)');
+          context.fillStyle = denseCore;
+          context.fillRect(-scale * 0.145, -scale * 0.145, scale * 0.29, scale * 0.29);
+        } else {
+          const halo = context.createRadialGradient(cx, cy, 0, cx, cy, scale * 0.28);
+          halo.addColorStop(0, 'rgba(255,248,193,.96)');
+          halo.addColorStop(0.045, 'rgba(255,207,79,.86)');
+          halo.addColorStop(0.13, 'rgba(255,117,58,.38)');
+          halo.addColorStop(0.30, 'rgba(218,58,6,.13)');
+          halo.addColorStop(0.62, 'rgba(85,7,35,.025)');
+          halo.addColorStop(1, 'rgba(0,0,0,0)');
+          context.globalAlpha = 1;
+          context.fillStyle = halo;
+          context.fillRect(cx - scale * 0.30, cy - scale * 0.30, scale * 0.60, scale * 0.60);
+
+          galaxyStars.forEach(function (star) {
+            const spin = reduceMotion.matches ? 0 : globalSpin * (1.38 - star.radius * 0.58) * star.drift;
+            const point = transformPoint(star.angle + spin, star.radius, scale, flatten, rotation);
+            const pulse = 0.78 + Math.sin(seconds * star.twinkle + star.phase) * 0.22;
+            const starSize = star.size * (1.08 - star.radius * 0.15);
+            const x = cx + point.x;
+            const y = cy + point.y;
+
+            drawPixel(x, y, starSize, star.color, star.alpha * pulse);
+
+            if (star.bright) {
+              drawPixel(x, y, starSize * 2.15, star.color, star.alpha * pulse * 0.14);
+            }
+          });
+
+          coreStars.forEach(function (star) {
+            const angle = star.angle + globalSpin * 1.65;
+            const point = transformPoint(angle, star.radius, scale, flatten, rotation);
+            const pulse = 0.78 + Math.sin(seconds * star.twinkle + star.phase) * 0.22;
+            drawPixel(cx + point.x, cy + point.y, star.size, star.color, star.alpha * pulse);
+          });
+          context.globalCompositeOperation = 'source-over';
+          const fallbackCore = context.createRadialGradient(cx, cy, 0, cx, cy, scale * 0.14);
+          fallbackCore.addColorStop(0, 'rgba(255,255,239,1)');
+          fallbackCore.addColorStop(0.12, 'rgba(255,248,200,1)');
+          fallbackCore.addColorStop(0.28, 'rgba(255,218,91,.96)');
+          fallbackCore.addColorStop(0.52, 'rgba(255,137,13,.62)');
+          fallbackCore.addColorStop(0.78, 'rgba(223,55,2,.20)');
+          fallbackCore.addColorStop(1, 'rgba(60,6,0,0)');
+          context.fillStyle = fallbackCore;
+          context.fillRect(cx - scale * 0.145, cy - scale * 0.145, scale * 0.29, scale * 0.29);
+        }
+        context.restore();
+
+        if (!still && !reduceMotion.matches && !document.hidden) {
+          pointerX += (targetPointerX - pointerX) * 0.032;
+          pointerY += (targetPointerY - pointerY) * 0.032;
+          animationFrame = window.requestAnimationFrame(function (nextTime) {
+            draw(nextTime, false);
+          });
+        }
+      }
+
+      function start() {
+        window.cancelAnimationFrame(animationFrame);
+        if (reduceMotion.matches || document.hidden) {
+          draw(performance.now(), true);
+          return;
+        }
+        animationFrame = window.requestAnimationFrame(function (time) {
+          draw(time, false);
+        });
+      }
+
+      let resizeTimer = 0;
+      window.addEventListener('resize', function () {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(function () {
+          resize();
+          start();
+        }, 130);
+      }, { passive: true });
+
+      if (!coarsePointer.matches) {
+        window.addEventListener('pointermove', function (event) {
+          targetPointerX = (event.clientX / Math.max(1, width) - 0.5) * 2;
+          targetPointerY = (event.clientY / Math.max(1, height) - 0.5) * 2;
+        }, { passive: true });
+      }
+
+      document.addEventListener('visibilitychange', start);
+      reduceMotion.addEventListener?.('change', start);
+      /*
+       * Primer objetivo: mostrar el formulario inmediatamente.
+       * La galaxia arranca después del primer paint.
+       */
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          resize();
+          start();
+        });
+      });
+    }());
+
+
+    const volverInicio = document.getElementById('volverInicio');
+
+    if (volverInicio) {
+      volverInicio.addEventListener('click', function (event) {
+        /*
+          Si login.html está dentro del index, no navegamos:
+          simplemente cerramos el overlay del padre.
+        */
+        if (window.parent !== window) {
+          event.preventDefault();
+
+          window.parent.postMessage(
+            'mesa-servicio-cerrar-login',
+            window.location.origin
+          );
+
+          return;
+        }
+
+        /*
+          Si login.html se abrió directamente, conserva su
+          comportamiento normal href="index.html".
+        */
+      });
+    }
+
     const mensajes = {
       campos: 'Ingrese el correo electrónico o usuario y la contraseña.',
       credenciales: 'El usuario, correo o contraseña son incorrectos.',
@@ -474,6 +1213,7 @@
     const parametros = new URLSearchParams(window.location.search);
     const codigoError = parametros.get('error');
     const estadoSesion = parametros.get('sesion');
+    const recuperacion = parametros.get('recuperacion');
     const contenedorError = document.getElementById('mensajeError');
     const contenedorEstado = document.getElementById('mensajeEstado');
 
@@ -492,7 +1232,12 @@
       contenedorEstado.classList.add('visible');
     }
 
-    if (codigoError || estadoSesion) {
+    if (recuperacion === 'ok') {
+      contenedorEstado.textContent = 'La contraseña se cambió correctamente. Ya puede iniciar sesión.';
+      contenedorEstado.classList.add('visible');
+    }
+
+    if (codigoError || estadoSesion || recuperacion) {
       window.history.replaceState(null, document.title, window.location.pathname);
     }
 

@@ -2,14 +2,16 @@ Options -Indexes
 
 DirectoryIndex login.html
 
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
 <FilesMatch "(^_|^\.|\.sql$|\.md$|\.example$|\.ini$|\.log$|\.bak$|\.old$|\.zip$|\.tar$|\.gz$|~$|configuracion\.local\.php$)">
     Require all denied
 </FilesMatch>
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
-    # Los modulos se muestran dentro del panel persistente del mismo sitio.
-    # SAMEORIGIN permite esa navegacion sin habilitar marcos externos.
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Cross-Origin-Opener-Policy "same-origin"
     Header always set Cross-Origin-Resource-Policy "same-origin"

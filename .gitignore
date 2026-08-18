@@ -6,4 +6,7 @@
 !/public/uploads/solicitudes/.htaccess
 *.log
 *.zip
+/n8n/local/.env
 
+.n8n/
+.phpunit.result.cache
